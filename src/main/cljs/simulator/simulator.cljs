@@ -1,3 +1,4 @@
 (ns simulator-cljs.core)
 
-(js/alert "Hello from cljs!")
+(.log js/console "test aoeuaaaao")
+(.log js/console "test aoeua1234o")

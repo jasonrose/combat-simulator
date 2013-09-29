@@ -28,10 +28,10 @@ module.exports = function (grunt) {
                 files: ['<%= yeoman.app %>/styles/{,*/}*.css'],
                 tasks: ['copy:styles', 'autoprefixer']
             },
-            cljs: {
-              files: ['<%= yeoman.src %>/**/*.cljs'],
-              tasks: ['shell:cljsbuild']
-            },
+//            cljs: {
+//              files: ['<%= yeoman.src %>/**/*.cljs'],
+//              tasks: ['shell:cljsbuild']
+//           },
             livereload: {
                 options: {
                     livereload: '<%= connect.options.livereload %>'
@@ -39,7 +39,7 @@ module.exports = function (grunt) {
                 files: [
                     '<%= yeoman.app %>/*.html',
                     '<%= yeoman.temp %>/styles/{,*/}*.css',
-                    '{<%= yeoman.temp %>,<%= yeoman.app %>}/scripts/**/*.js',
+                    '{<%= yeoman.app %>}/scripts/**/*.js',
                     '<%= yeoman.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
                 ]
             }
@@ -47,6 +47,9 @@ module.exports = function (grunt) {
         shell: {
           cljsbuild: {
             command: 'lein cljsbuild once'
+          },
+          cljsbuild_auto: {
+            command: 'lein cljsbuild auto'
           }
         },
         connect: {
@@ -123,11 +126,12 @@ module.exports = function (grunt) {
         /*concat: {
             dist: {}
         },*/
-        'bower-install': {
-            app: {
-                html: '<%= yeoman.app %>/index.html',
-                ignorePath: '<%= yeoman.app %>/'
+        bower: {
+          install: {
+            options: {
+              targetDir: 'target/bower_components'
             }
+          }
         },
         // not enabled since usemin task does concat and uglify
         // check index.html to edit your build targets
@@ -256,6 +260,10 @@ module.exports = function (grunt) {
                 'imagemin',
                 'svgmin',
                 'htmlmin'
+            ],
+            watch: [
+              'watch',
+              'shell:cljsbuild_auto'
             ]
         }
     });
@@ -270,7 +278,7 @@ module.exports = function (grunt) {
             'concurrent:server',
             'autoprefixer',
             'connect:livereload',
-            'watch'
+            'concurrent:watch'
         ]);
     });
 
