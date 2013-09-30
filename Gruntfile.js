@@ -274,6 +274,15 @@ module.exports = function (grunt) {
                 'watch',
                 'shell:cljsbuildAuto'
             ]
+        },
+        'gh-pages': {
+            options: {
+                base: '<%= yeoman.dist %>',
+                message: 'Auto-prepared by grunt-gh-pages.',
+                clone: 'target/gh-pages-repo',
+                push: true
+            },
+            src: ['**/*']
         }
     });
 
