@@ -45,12 +45,15 @@ module.exports = function (grunt) {
             }
         },
         shell: {
-          cljsbuild: {
-            command: 'lein cljsbuild once'
-          },
-          cljsbuild_auto: {
-            command: 'lein cljsbuild auto'
-          }
+            cljsbuild: {
+                command: 'lein cljsbuild once'
+            },
+            cljsbuildProd: {
+                command: 'lein cljsbuild once prod'
+            },
+            cljsbuildAuto: {
+                command: 'lein cljsbuild auto'
+            }
         },
         connect: {
             options: {
@@ -89,13 +92,20 @@ module.exports = function (grunt) {
                 files: [{
                     dot: true,
                     src: [
-                        '<%= yeoman.temp %>',
-                        '<%= yeoman.dist %>/*',
-                        '!<%= yeoman.dist %>/.git*'
+                        'target/cljsbuild-*',
+                        '<%= yeoman.dist %>',
+                        '<%= yeoman.temp %>'
                     ]
                 }]
             },
-            server: '<%= yeoman.temp %>'
+            all: {
+                files: [{
+                    dot: true,
+                    src: [
+                        'target'
+                    ]
+                }]
+            }
         },
         jshint: {
             options: {
@@ -127,11 +137,11 @@ module.exports = function (grunt) {
             dist: {}
         },*/
         bower: {
-          install: {
-            options: {
-              targetDir: 'target/bower_components'
+            install: {
+                options: {
+                    targetDir: 'target/bower_components'
+                }
             }
-          }
         },
         // not enabled since usemin task does concat and uglify
         // check index.html to edit your build targets
@@ -231,7 +241,6 @@ module.exports = function (grunt) {
                     dest: '<%= yeoman.dist %>',
                     src: [
                         '*.{ico,png,txt}',
-                        '.htaccess',
                         'images/{,*/}*.{webp,gif}',
                         'styles/fonts/{,*/}*.*'
                     ]
@@ -255,15 +264,15 @@ module.exports = function (grunt) {
                 'copy:styles'
             ],
             dist: [
-                'shell:cljsbuild',
+                'shell:cljsbuildProd',
                 'copy:styles',
                 'imagemin',
                 'svgmin',
                 'htmlmin'
             ],
             watch: [
-              'watch',
-              'shell:cljsbuild_auto'
+                'watch',
+                'shell:cljsbuildAuto'
             ]
         }
     });
@@ -274,7 +283,7 @@ module.exports = function (grunt) {
         }
 
         grunt.task.run([
-            'clean:server',
+            'clean:dist',
             'concurrent:server',
             'autoprefixer',
             'connect:livereload',
@@ -283,7 +292,7 @@ module.exports = function (grunt) {
     });
 
     grunt.registerTask('test', [
-        'clean:server',
+        'clean:dist',
         'concurrent:test',
         'autoprefixer',
         'connect:test'
@@ -296,7 +305,6 @@ module.exports = function (grunt) {
         'autoprefixer',
         'concat',
         'cssmin',
-        'uglify',
         'copy:dist',
         'rev',
         'usemin'
